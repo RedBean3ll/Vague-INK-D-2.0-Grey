@@ -1,0 +1,30 @@
+/* buttons */
+#button {
+    -fx-background-color: #1DA129;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/* Password Fields */
+#credentialBox {
+    -fx-background-radius: 30;
+    -fx-background-padding: 5;
+    -fx-border-height: 20;
+}
+
+/* Text ID's' */
+#loginHeader {
+    -fx-text-fill: black;
+    -fx-font-size: 44px;
+    -fx-font-weight: bold;
+}
+
+#textRed {
+    -fx-text-fill: #ff0000;
+}
+
+/* containers */
+#block {
+    -fx-background-color: #ffffff;
+    -fx-border-color: black;
+}
