@@ -1,0 +1,61 @@
+/* Buttons */
+#button {
+    -fx-background-color: #1DA129;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/*-fx-background-radius: 30;*/
+#buttonSearch {
+    -fx-background-padding: 5;
+    -fx-background-color: #1DA129;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+#buttonBar {
+    -fx-background-color: #1DA129;
+    -fx-text-fill: #ffffff;
+    -fx-border: none;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent transparent white transparent;
+}
+
+/* Text */
+#barHeader {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #1DA129;
+    -fx-font-size: 55px;
+    -fx-font-weight: bold;
+}
+
+#barBody {
+    -fx-border-color: black;
+    -fx-border-width: 0 1px 1px 1px;
+}
+
+#searchHeader {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 33px;
+    -fx-font-weight: bold;
+}
+
+#searchBar {
+    -fx-font-size: 15px;
+}
+
+/* Bars */
+#menuBar {
+    -fx-background-color: #1DA129;
+}
+
+/*** Containers ***/
+#table {
+    
+}
+
+#blockA {
+    -fx-border-color: #C8C8C8;
+    -fx-border-width: 0px 1px 0px 1px;
+}

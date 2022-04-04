@@ -1,0 +1,38 @@
+/* Buttons */
+#button {
+    -fx-background-color: #1DA129;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+#buttonBar {
+    -fx-background-color: #1DA129;
+    -fx-text-fill: #ffffff;
+    -fx-border: none;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent transparent white transparent;
+    
+}
+
+/* Text */
+#barHeader {
+    -fx-text-fill: black;
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+}
+
+#searchHeader {
+    -fx-text-fill: black;
+    -fx-font-size: 55px;
+    -fx-font-weight: bold;
+}
+
+#searchBar {
+    -fx-font-size: 15px;
+}
+
+/* Bars */
+#menuBar {
+    -fx-background-color: #1DA129;
+}
