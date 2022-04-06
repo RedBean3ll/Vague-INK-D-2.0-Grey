@@ -3,11 +3,12 @@
     -fx-background-color: #1DA129;
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
+    -fx-background-radius: 0em;
 }
 
 /* Password Fields */
 #credentialBox {
-    -fx-background-radius: 30;
+    -fx-background-radius: 0cm;
     -fx-background-padding: 5;
     -fx-border-height: 20;
 }

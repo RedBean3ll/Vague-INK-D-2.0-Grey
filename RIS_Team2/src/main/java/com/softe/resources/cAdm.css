@@ -1,6 +1,7 @@
 /* Buttons */
 #button {
     -fx-background-color: #1DA129;
+    -fx-background-radius: 0em;
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
 }
@@ -8,6 +9,7 @@
 /*-fx-background-radius: 30;*/
 #buttonSearch {
     -fx-background-padding: 5;
+    -fx-background-radius: 0em;
     -fx-background-color: #1DA129;
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
@@ -31,8 +33,20 @@
 }
 
 #barBody {
-    -fx-border-color: black;
-    -fx-border-width: 0 1px 1px 1px;
+
+}
+
+#barBody .scroll-bar:vertical .thumb,
+#barBody .scroll-bar:horizontal .thumb {
+    -fx-background-color: #C1C1C1;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+    -fx-unit-increment: 40;
+    -fx-block-increment: 70;
+}
+
+#barBody .increment-button, #barBody .decrement-button {
+    
 }
 
 #searchHeader {
@@ -52,7 +66,39 @@
 
 /*** Containers ***/
 #table {
-    
+    -fx-background-color: #F4FFF8;
+    -fx-text-background-color: #000000;
+    -fx-border-color: #C8C8C8;
+    -fx-border-width: 1px, 1px, 1px, 1px;
+    -fx-alignment: CENTER;
+}
+
+#table .table-column {
+    -fx-alignment: CENTER;
+}
+
+#table .column-header {
+    -fx-background-color: #1DA129;
+    -fx-border-color: #C8C8C8;
+    -fx-border-width: 1px, 1px, 1px, 1px;
+}
+
+#table .column-header-background .filler {
+    -fx-background-color: #1DA129;
+}
+
+#table .column-header .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+#table .table-row-cell:selected {
+    -fx-background-color: #D1D1D1;
+}
+
+#table .table-row-cell:hover {
+    -fx-background-color: #D1D1D1;
+    -fx-text-background-color: #F00000; 
 }
 
 #blockA {

@@ -2,6 +2,9 @@ package com.softe.ris_team;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
@@ -16,12 +19,16 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -73,7 +80,7 @@ public class Admin extends Stage {
     
     private TableView placedOrdersTable = new TableView();
     
-    private TableView systemUsersTable = new TableView();
+    private TableView systemUsersTable;
     
     
     private void homepageSceneCollection() {
@@ -112,28 +119,18 @@ public class Admin extends Stage {
         /*** BUTTON CONTROLLERS ***/
         //homeScene --------------------------------------------------
         adminScene.setOnAction((ActionEvent a) -> {
-            placedOrdersTable.getItems().clear();
-            placedOrdersTable.getColumns().clear();
             adminSceneAction(a); });
         referralScene.setOnAction((ActionEvent a) -> {
-            placedOrdersTable.getItems().clear();
-            placedOrdersTable.getColumns().clear();
             referralSceneAction(a); });
         appointmentScene.setOnAction((ActionEvent a) -> {
-            placedOrdersTable.getItems().clear();
-            placedOrdersTable.getColumns().clear();
             appointmentSceneAction(a); });
         orderScene.setOnAction((ActionEvent a) -> {
-            placedOrdersTable.getItems().clear();
-            placedOrdersTable.getColumns().clear();
             orderSceneAction(a); });
         invoiceScene.setOnAction((ActionEvent a) -> {
-            placedOrdersTable.getItems().clear();
-            placedOrdersTable.getColumns().clear();
             invoiceSceneAction(a); });
         
         //Left toolbar
-        sceneBar.getItems().addAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
+        sceneBar.getItems().setAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
         sceneBar.setId("menuBar");
         
         //Right toolbar contents
@@ -152,7 +149,7 @@ public class Admin extends Stage {
         
         //RIGHT TOOLBAR
         ToolBar stageBar = new ToolBar();
-        stageBar.getItems().addAll(getImageView(), user, separatorBar, logoutMain);
+        stageBar.getItems().setAll(getImageView(), user, separatorBar, logoutMain);
         stageBar.setId("menuBar");
         
         //TOOLBAR HUB       
@@ -177,15 +174,15 @@ public class Admin extends Stage {
         setOneHeadA.setAlignment(Pos.CENTER);
         
         /*** BUTTONS ***/
-        Button newSelectedOne = new Button("+");
-        newSelectedOne.setId("buttonSearch");
-        HBox.setMargin(newSelectedOne, new Insets(0, 0, 0, 30));
+        Button newObjectOne = new Button("New");
+        newObjectOne.setId("buttonSearch");
+        HBox.setMargin(newObjectOne, new Insets(0, 0, 0, 30));
         
-        Button removeSelectedOne = new Button("-");
+        Button removeSelectedOne = new Button("Remove Selected");
         removeSelectedOne.setId("buttonSearch");
         HBox.setMargin(removeSelectedOne, new Insets(0, 0, 0, 5));
         
-        Button modifySelectedOne = new Button("%");
+        Button modifySelectedOne = new Button("Modify Selected");
         modifySelectedOne.setId("buttonSearch");
         HBox.setMargin(modifySelectedOne, new Insets(0, 0, 0, 5));
         
@@ -202,33 +199,33 @@ public class Admin extends Stage {
         HBox.setMargin(searchOne, new Insets(5, 0, 5, 0));
 
         HBox setOneHeadB = new HBox();
-        setOneHeadB.getChildren().addAll(newSelectedOne, removeSelectedOne, modifySelectedOne, searchLabelOne, searchOne);
+        setOneHeadB.getChildren().setAll(newObjectOne, removeSelectedOne, modifySelectedOne, searchLabelOne, searchOne);
         setOneHeadB.setId("blockA");
         setOneHeadB.setAlignment(Pos.CENTER_LEFT);
         HBox.setMargin(setOneHeadB, new Insets(0, 65, 0, 0));
         
         /*** TABLE ONE ***/
         TableColumn firstNameOne = new TableColumn("First Name");
-        firstNameOne.setMinWidth(120);
+        firstNameOne.prefWidthProperty().bind(placedOrdersTable.widthProperty().multiply(0.1)); //Multiply must combine to _
         firstNameOne.setReorderable(false);
         
         TableColumn lastNameOne = new TableColumn("Last Name");
-        lastNameOne.setMinWidth(120);
+        lastNameOne.prefWidthProperty().bind(placedOrdersTable.widthProperty().multiply(0.1));
         lastNameOne.setReorderable(false);
         
         TableColumn modalityOne = new TableColumn("Modality");
-        modalityOne.setMinWidth(120);
+        modalityOne.prefWidthProperty().bind(placedOrdersTable.widthProperty().multiply(0.2));
         modalityOne.setReorderable(false);
         
         TableColumn notesOne = new TableColumn("Notes");
-        notesOne.setMinWidth(400);
+        notesOne.prefWidthProperty().bind(placedOrdersTable.widthProperty().multiply(0.4));
         notesOne.setReorderable(false);
         
         TableColumn statusOne = new TableColumn("Status");
-        statusOne.setMinWidth(120);
+        statusOne.prefWidthProperty().bind(placedOrdersTable.widthProperty().multiply(0.1967));
         statusOne.setReorderable(false);
         
-        placedOrdersTable.getColumns().addAll(firstNameOne, lastNameOne, modalityOne, notesOne, statusOne);
+        placedOrdersTable.getColumns().setAll(firstNameOne, lastNameOne, modalityOne, notesOne, statusOne);
         placedOrdersTable.setId("blockA");
         
         //final ObservableList<placeholder> tableDataOrderOne = FXCollections.observableArrayList();
@@ -241,8 +238,11 @@ public class Admin extends Stage {
 
         //SET ONE HUB
         ScrollPane contentOneOrg = new ScrollPane(placedOrdersTable); //Holds table
-        //contentOneOrg.setId("barBody");
+        contentOneOrg.setId("barBody");
         contentOneOrg.setFitToWidth(true);
+        
+        placedOrdersTable.setId("table");
+        placedOrdersTable.prefWidthProperty().bind(contentOneOrg.widthProperty());
         
         //BODY HUB
         VBox setOneBody = new VBox(setOneHeadA, setOneHeadB, contentOneOrg);
@@ -274,7 +274,7 @@ public class Admin extends Stage {
         HBox.setMargin(searchTwo, new Insets(0, 65, 0, 0));
         
         HBox setTwoHeadB = new HBox();
-        setTwoHeadB.getChildren().addAll(searchLabelTwo, searchTwo);
+        setTwoHeadB.getChildren().setAll(searchLabelTwo, searchTwo);
         setTwoHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
         //SET TWO HUB
@@ -311,7 +311,7 @@ public class Admin extends Stage {
         searchThree.setMinWidth(184);
         
         HBox setThreeHeadB = new HBox();
-        setThreeHeadB.getChildren().addAll(searchLabelThree, searchThree);
+        setThreeHeadB.getChildren().setAll(searchLabelThree, searchThree);
         HBox.setMargin(searchThree, new Insets(0, 65, 0, 0));
         setThreeHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
@@ -348,7 +348,7 @@ public class Admin extends Stage {
         searchFour.setMinWidth(184);
         
         HBox setFourHeadB = new HBox();
-        setFourHeadB.getChildren().addAll(searchLabelFour, searchFour);
+        setFourHeadB.getChildren().setAll(searchLabelFour, searchFour);
         HBox.setMargin(searchFour, new Insets(0, 65, 0, 0));
         setFourHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
@@ -385,7 +385,7 @@ public class Admin extends Stage {
         searchFive.setMinWidth(184);
         
         HBox setFiveHeadB = new HBox();
-        setFiveHeadB.getChildren().addAll(searchLabelFive, searchFive);
+        setFiveHeadB.getChildren().setAll(searchLabelFive, searchFive);
         HBox.setMargin(searchFive, new Insets(0, 65, 0, 0));
         setFiveHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
@@ -422,7 +422,7 @@ public class Admin extends Stage {
         searchSix.setMinWidth(184);
         
         HBox setSixHeadB = new HBox();
-        setSixHeadB.getChildren().addAll(searchLabelSix, searchSix);
+        setSixHeadB.getChildren().setAll(searchLabelSix, searchSix);
         HBox.setMargin(searchSix, new Insets(0, 65, 0, 0));
         setSixHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
@@ -459,7 +459,7 @@ public class Admin extends Stage {
         searchSeven.setMinWidth(184);
         
         HBox setSevenHeadB = new HBox();
-        setSevenHeadB.getChildren().addAll(searchLabelSeven, searchSeven);
+        setSevenHeadB.getChildren().setAll(searchLabelSeven, searchSeven);
         HBox.setMargin(searchSeven, new Insets(0, 65, 0, 0));
         setSevenHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
@@ -478,6 +478,7 @@ public class Admin extends Stage {
         //SCENE LAYOUT
         VBox rootBox = new VBox(toolBarHub, verticalHub);
         ScrollPane scrollPane = new ScrollPane(rootBox);
+        scrollPane.setId("barBody");
         scrollPane.setFitToWidth(true);
         
         Scene home = new Scene(scrollPane, getSceneWidth(), getSceneHeight());
@@ -485,10 +486,13 @@ public class Admin extends Stage {
         
         super.setScene(home);
         this.show();
-        
-    }
+       }
     
     private void adminSceneCollection() {
+        VBox rootBox = new VBox();
+        ScrollPane scrollPane = new ScrollPane(rootBox);
+        
+        Scene home = new Scene(scrollPane, getSceneWidth(), getSceneHeight());
         
         //Toolbar
         ToolBar sceneBar = new ToolBar();
@@ -523,34 +527,34 @@ public class Admin extends Stage {
         
         /*** BUTTON CONTROLLERS ***/
         homeScene.setOnAction((ActionEvent b) -> {
-            systemUsersTable.getItems().clear();
-            systemUsersTable.getColumns().clear();
+            //systemUsersTable.getItems().clear();
+            //systemUsersTable.getColumns().clear();
             homepageSceneAction(b);
         });
         //adminScene()
         referralScene.setOnAction((ActionEvent b) -> {
-            systemUsersTable.getItems().clear();
-            systemUsersTable.getColumns().clear();
+            //systemUsersTable.getItems().clear();
+            //systemUsersTable.getColumns().clear();
             referralSceneAction(b);
         });
         appointmentScene.setOnAction((ActionEvent b) -> {
-            systemUsersTable.getItems().clear();
-            systemUsersTable.getColumns().clear();
+            //systemUsersTable.getItems().clear();
+            //systemUsersTable.getColumns().clear();
             appointmentSceneAction(b);
         });
         orderScene.setOnAction((ActionEvent b) -> {
-            systemUsersTable.getItems().clear();
-            systemUsersTable.getColumns().clear();
+            //systemUsersTable.getItems().clear();
+            //systemUsersTable.getColumns().clear();
             orderSceneAction(b);
         });
         invoiceScene.setOnAction((ActionEvent b) -> {
-            systemUsersTable.getItems().clear();
-            systemUsersTable.getColumns().clear();
+            //systemUsersTable.getItems().clear();
+            //systemUsersTable.getColumns().clear();
             invoiceSceneAction(b);
         });
         
         //Left toolbar
-        sceneBar.getItems().addAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
+        sceneBar.getItems().setAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
         sceneBar.setId("menuBar");
         
         //Right toolbar contents
@@ -569,7 +573,7 @@ public class Admin extends Stage {
         
         //RIGHT TOOLBAR
         ToolBar stageBar = new ToolBar();
-        stageBar.getItems().addAll(getImageView(), user, separatorBar, logoutMain);
+        stageBar.getItems().setAll(getImageView(), user, separatorBar, logoutMain);
         stageBar.setId("menuBar");
         
         //TOOLBAR HUB       
@@ -594,15 +598,17 @@ public class Admin extends Stage {
         setOneHeadA.setAlignment(Pos.CENTER);
         
         /*** BUTTONS ***/
-        Button newSelectedOne = new Button("+");
-        newSelectedOne.setId("buttonSearch");
-        HBox.setMargin(newSelectedOne, new Insets(0, 0, 0, 30));
+        Button newObjectOne = new Button("New");
+        newObjectOne.setId("buttonSearch");
+        HBox.setMargin(newObjectOne, new Insets(0, 0, 0, 30));
         
-        Button removeSelectedOne = new Button("-");
+        //NEW BUTTON BELOW VVV
+        
+        Button removeSelectedOne = new Button("Remove Selected");
         removeSelectedOne.setId("buttonSearch");
         HBox.setMargin(removeSelectedOne, new Insets(0, 0, 0, 5));
         
-        Button modifySelectedOne = new Button("%");
+        Button modifySelectedOne = new Button("Modify Selected");
         modifySelectedOne.setId("buttonSearch");
         HBox.setMargin(modifySelectedOne, new Insets(0, 0, 0, 5));
         
@@ -619,47 +625,99 @@ public class Admin extends Stage {
         HBox.setMargin(searchOne, new Insets(5, 0, 5, 0));
 
         HBox setOneHeadB = new HBox();
-        setOneHeadB.getChildren().addAll(newSelectedOne, removeSelectedOne, modifySelectedOne, searchLabelOne, searchOne);
+        setOneHeadB.getChildren().setAll(newObjectOne, removeSelectedOne, modifySelectedOne, searchLabelOne, searchOne);
         setOneHeadB.setId("blockA");
         setOneHeadB.setAlignment(Pos.CENTER_LEFT);
         HBox.setMargin(setOneHeadB, new Insets(0, 65, 0, 0));
         
-        TableColumn firstNameOne1 = new TableColumn("First Name");
-        firstNameOne1.setMinWidth(120);
-        firstNameOne1.setReorderable(false);
+        systemUsersTable = new TableView();
+        
+        TableColumn userIdOne = new TableColumn("ID");
+        userIdOne.prefWidthProperty().bind(systemUsersTable.widthProperty().multiply(0.05));
+        userIdOne.setReorderable(false);
+        
+        TableColumn usernameOne = new TableColumn("Username");
+        usernameOne.prefWidthProperty().bind(systemUsersTable.widthProperty().multiply(0.1));
+        usernameOne.setReorderable(false);
+        
+        TableColumn firstNameOne = new TableColumn("First Name");
+        firstNameOne.prefWidthProperty().bind(systemUsersTable.widthProperty().multiply(0.1));
+        firstNameOne.setReorderable(false);
+        
+        TableColumn middleNameOne = new TableColumn("Middle Name");
+        middleNameOne.prefWidthProperty().bind(systemUsersTable.widthProperty().multiply(0.05));
         
         TableColumn lastNameOne = new TableColumn("Last Name");
-        lastNameOne.setMinWidth(120);
+        lastNameOne.prefWidthProperty().bind(systemUsersTable.widthProperty().multiply(0.2));
         lastNameOne.setReorderable(false);
         
-        TableColumn modalityOne = new TableColumn("Modality");
-        modalityOne.setMinWidth(120);
-        modalityOne.setReorderable(false);
+        TableColumn emailOne = new TableColumn("email");
+        emailOne.prefWidthProperty().bind(systemUsersTable.widthProperty().multiply(0.2));
+        emailOne.setReorderable(false);
         
-        TableColumn notesOne = new TableColumn("Notes");
-        notesOne.setMinWidth(400);
-        notesOne.setReorderable(false);
+        TableColumn systemRoleOne = new TableColumn("Role");
+        systemRoleOne.prefWidthProperty().bind(systemUsersTable.widthProperty().multiply(0.2));
+        systemRoleOne.setReorderable(false);
         
-        TableColumn statusOne = new TableColumn("Status");
-        statusOne.setMinWidth(120);
-        statusOne.setReorderable(false);
+        TableColumn activeOne = new TableColumn("Active");
+        activeOne.prefWidthProperty().bind(systemUsersTable.widthProperty().multiply(0.0967));
+        activeOne.setReorderable(false);
         
-        
-        systemUsersTable.getColumns().addAll(firstNameOne1, lastNameOne, modalityOne, notesOne, statusOne);
+        /*** CLEAR TABLE OF PREVIOUS ITEMS ***/
+        //systemUsersTable.getItems().clear();
+        systemUsersTable.getColumns().setAll(userIdOne, usernameOne, firstNameOne, middleNameOne, lastNameOne, emailOne, systemRoleOne, activeOne);
         systemUsersTable.setId("blockA");
         
-        //final ObservableList<placeholder> tableDataOrderOne = FXCollections.observableArrayList();
-             
-        //column_name.setCellValueFactory(
-        //new PropertyValueFactory<class,String>("ID")
-        //);
         
-        //tableViewOne.setItems(tableDataOrderOne);
+        ObservableList<SystemUserObject> tableDataSUOOne = FXCollections.observableArrayList();
+        
+        /*** ADD, REMOVE, MODIFY ACTIONS ***/
+        userIdOne.setCellValueFactory(
+        new PropertyValueFactory<SystemUserObject,String>("ACCOUNT_IDENTIFIER")
+        );
+        
+        usernameOne.setCellValueFactory(
+        new PropertyValueFactory<SystemUserObject,String>("ACCOUNT_USERNAME")
+        );
+        
+        firstNameOne.setCellValueFactory(
+        new PropertyValueFactory<SystemUserObject,String>("USER_FIRST_NAME")
+        );
+        
+        middleNameOne.setCellValueFactory(
+        new PropertyValueFactory<SystemUserObject,String>("USER_MIDDLE_NAME")
+        );
+        
+        lastNameOne.setCellValueFactory(
+        new PropertyValueFactory<SystemUserObject,String>("USER_LAST_NAME")
+        );
+        
+        emailOne.setCellValueFactory(
+        new PropertyValueFactory<SystemUserObject,String>("USER_EMAIL")
+        );
+        
+        systemRoleOne.setCellValueFactory(
+        new PropertyValueFactory<SystemUserObject,String>("USER_ROLE")
+        );
+        
+        activeOne.setCellValueFactory(
+        new PropertyValueFactory<SystemUserObject,String>("ACCOUNT_ACTIVE")
+        );
+        
+        systemUsersTable.setItems(tableDataSUOOne);
+        
+        newObjectOne.setOnAction((ActionEvent a) -> {
+            popAddUser(rootBox);
+        });
         
         //SET ONE HUB
         ScrollPane contentOneOrg = new ScrollPane(systemUsersTable); //Holds table
-        //contentOneOrg.setId("barBody");
         contentOneOrg.setFitToWidth(true);
+        
+        systemUsersTable.setId("table");
+        systemUsersTable.prefWidthProperty().bind(contentOneOrg.widthProperty());
+        
+        
         
         //BODY HUB
         VBox setOneBody = new VBox(setOneHeadA, setOneHeadB, contentOneOrg);
@@ -690,7 +748,7 @@ public class Admin extends Stage {
         searchTwo.setMinWidth(184);
         
         HBox setTwoHeadB = new HBox();
-        setTwoHeadB.getChildren().addAll(searchLabelTwo, searchTwo);
+        setTwoHeadB.getChildren().setAll(searchLabelTwo, searchTwo);
         HBox.setMargin(searchTwo, new Insets(0, 65, 0, 0));
         setTwoHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
@@ -727,7 +785,7 @@ public class Admin extends Stage {
         searchThree.setMinWidth(184);
         
         HBox setThreeHeadB = new HBox();
-        setThreeHeadB.getChildren().addAll(searchLabelThree, searchThree);
+        setThreeHeadB.getChildren().setAll(searchLabelThree, searchThree);
         HBox.setMargin(searchThree, new Insets(0, 65, 0, 0));
         setThreeHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
@@ -765,7 +823,7 @@ public class Admin extends Stage {
         HBox.setMargin(searchFour, new Insets(0, 65, 0, 0));
         
         HBox setFourHeadB = new HBox();
-        setFourHeadB.getChildren().addAll(searchLabelFour, searchFour);
+        setFourHeadB.getChildren().setAll(searchLabelFour, searchFour);
         setFourHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
         //SET FOUR HUB
@@ -802,7 +860,7 @@ public class Admin extends Stage {
         HBox.setMargin(searchFive, new Insets(0, 65, 0, 0));
         
         HBox setFiveHeadB = new HBox();
-        setFiveHeadB.getChildren().addAll(searchLabelFive, searchFive);
+        setFiveHeadB.getChildren().setAll(searchLabelFive, searchFive);
         setFiveHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
         //SET FIVE HUB
@@ -839,7 +897,7 @@ public class Admin extends Stage {
         HBox.setMargin(searchSix, new Insets(0, 65, 0, 0));
         
         HBox setSixHeadB = new HBox();
-        setSixHeadB.getChildren().addAll(searchLabelSix, searchSix);
+        setSixHeadB.getChildren().setAll(searchLabelSix, searchSix);
         setSixHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
         //SET ONE HUB
@@ -875,7 +933,7 @@ public class Admin extends Stage {
         searchSeven.setMinWidth(184);
         
         HBox setSevenHeadB = new HBox();
-        setSevenHeadB.getChildren().addAll(searchLabelSeven, searchSeven);
+        setSevenHeadB.getChildren().setAll(searchLabelSeven, searchSeven);
         HBox.setMargin(searchSeven, new Insets(0, 65, 0, 0));
         setSevenHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
@@ -912,7 +970,7 @@ public class Admin extends Stage {
         searchEight.setMinWidth(184);
         
         HBox setEightHeadB = new HBox();
-        setEightHeadB.getChildren().addAll(searchLabelEight, searchEight);
+        setEightHeadB.getChildren().setAll(searchLabelEight, searchEight);
         HBox.setMargin(searchEight, new Insets(0, 65, 0, 0));
         setEightHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
@@ -929,12 +987,39 @@ public class Admin extends Stage {
         VBox verticalHub = new VBox(setOneBody, setTwoBody, setThreeBody, setFourBody, setFiveBody, setSixBody, setSevenBody, setEightBody); 
         
         //SCENE LAYOUT
-        VBox rootBox = new VBox(toolBarHub, verticalHub);
-        ScrollPane scrollPane = new ScrollPane(rootBox);
+        
+        rootBox.getChildren().setAll(toolBarHub, verticalHub);
+        
+        scrollPane.setId("barBody");
         scrollPane.setFitToWidth(true);
         
-        Scene home = new Scene(scrollPane, getSceneWidth(), getSceneHeight());
         home.getStylesheets().add("file:../RIS_Team2/src/main/java/com/softe/resources/cAdm.css");
+        
+        
+        //POPUPS
+        newObjectOne.setOnAction((ActionEvent e) -> {
+            
+            VBox addPopupOne = new VBox();
+            addPopupOne.setStyle("-fx-background-color: red");
+            
+            
+            Scene scenePopupOne = new Scene(addPopupOne, 300, 300);
+            
+            
+            Stage stagePopupOne = new Stage();
+            //stagePopupOne.initStyle(StageStyle.UNDECORATED);
+            stagePopupOne.initOwner(this);
+            stagePopupOne.initModality(Modality.WINDOW_MODAL);
+            
+            
+            rootBox.disableProperty().bind(stagePopupOne.showingProperty());
+            stagePopupOne.setScene(scenePopupOne);
+            
+            stagePopupOne.showAndWait();
+            //stagePopupOne.show();
+            
+            
+        });
         
         super.setScene(home);    
     }
@@ -985,7 +1070,7 @@ public class Admin extends Stage {
         invoiceScene.setOnAction((ActionEvent r) -> { invoiceSceneAction(r); });
         
         //Left toolbar
-        sceneBar.getItems().addAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
+        sceneBar.getItems().setAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
         sceneBar.setId("menuBar");
         
         //Right toolbar contents
@@ -1004,7 +1089,7 @@ public class Admin extends Stage {
         
         //RIGHT TOOLBAR
         ToolBar stageBar = new ToolBar();
-        stageBar.getItems().addAll(getImageView(), user, separatorBar, logoutMain);
+        stageBar.getItems().setAll(getImageView(), user, separatorBar, logoutMain);
         stageBar.setId("menuBar");
         
         //TOOLBAR HUB       
@@ -1041,7 +1126,7 @@ public class Admin extends Stage {
         searchOne.setMinWidth(184);
         
         HBox setOneHeadB = new HBox();
-        setOneHeadB.getChildren().addAll(searchLabelOne, searchOne);
+        setOneHeadB.getChildren().setAll(searchLabelOne, searchOne);
         HBox.setMargin(searchOne, new Insets(0, 65, 0, 0));
         setOneHeadB.setAlignment(Pos.CENTER_RIGHT);
         
@@ -1060,6 +1145,7 @@ public class Admin extends Stage {
         //SCENE LAYOUT
         VBox rootBox = new VBox(toolBarHub, verticalHub);
         ScrollPane scrollPane = new ScrollPane(rootBox);
+        scrollPane.setId("barBody");
         scrollPane.setFitToWidth(true);
         
         Scene referr = new Scene(scrollPane, getSceneWidth(), getSceneHeight());
@@ -1110,7 +1196,7 @@ public class Admin extends Stage {
         invoiceScene.setOnAction((ActionEvent r) -> {invoiceSceneAction(r); });
         
         //Left toolbar
-        sceneBar.getItems().addAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
+        sceneBar.getItems().setAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
         sceneBar.setId("menuBar");
         
         //Right toolbar contents
@@ -1129,7 +1215,7 @@ public class Admin extends Stage {
         
         //RIGHT TOOLBAR
         ToolBar stageBar = new ToolBar();
-        stageBar.getItems().addAll(getImageView(), user, separatorBar, logoutMain);
+        stageBar.getItems().setAll(getImageView(), user, separatorBar, logoutMain);
         stageBar.setId("menuBar");
         
         //TOOLBAR HUB       
@@ -1166,7 +1252,7 @@ public class Admin extends Stage {
         searchOne.setMinWidth(184);
         
         HBox setOneHeadB = new HBox();
-        setOneHeadB.getChildren().addAll(searchLabelOne, searchOne);
+        setOneHeadB.getChildren().setAll(searchLabelOne, searchOne);
         HBox.setMargin(searchOne, new Insets(0, 65, 0, 0));
         setOneHeadB.setAlignment(Pos.CENTER_RIGHT);
         
@@ -1185,6 +1271,7 @@ public class Admin extends Stage {
         //SCENE LAYOUT
         VBox rootBox = new VBox(toolBarHub, verticalHub);
         ScrollPane scrollPane = new ScrollPane(rootBox);
+        scrollPane.setId("barBody");
         scrollPane.setFitToWidth(true);
         
         Scene appt = new Scene(scrollPane, getSceneWidth(), getSceneHeight());
@@ -1235,7 +1322,7 @@ public class Admin extends Stage {
         invoiceScene.setOnAction((ActionEvent r) -> {invoiceSceneAction(r); });
         
         //Left toolbar
-        sceneBar.getItems().addAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
+        sceneBar.getItems().setAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
         sceneBar.setId("menuBar");
         
         //Right toolbar contents
@@ -1254,7 +1341,7 @@ public class Admin extends Stage {
         
         //RIGHT TOOLBAR
         ToolBar stageBar = new ToolBar();
-        stageBar.getItems().addAll(getImageView(), user, separatorBar, logoutMain);
+        stageBar.getItems().setAll(getImageView(), user, separatorBar, logoutMain);
         stageBar.setId("menuBar");
         
         //TOOLBAR HUB       
@@ -1291,7 +1378,7 @@ public class Admin extends Stage {
         searchOne.setMinWidth(184);
         
         HBox setOneHeadB = new HBox();
-        setOneHeadB.getChildren().addAll(searchLabelOne, searchOne);
+        setOneHeadB.getChildren().setAll(searchLabelOne, searchOne);
         HBox.setMargin(searchOne, new Insets(0, 65, 0, 0));
         setOneHeadB.setAlignment(Pos.CENTER_RIGHT);
         
@@ -1310,6 +1397,7 @@ public class Admin extends Stage {
         //SCENE LAYOUT
         VBox rootBox = new VBox(toolBarHub, verticalHub);
         ScrollPane scrollPane = new ScrollPane(rootBox);
+        scrollPane.setId("barBody");
         scrollPane.setFitToWidth(true);
         
         Scene ordo = new Scene(scrollPane, getSceneWidth(), getSceneHeight());
@@ -1360,7 +1448,7 @@ public class Admin extends Stage {
         //invoiceSceneAction -------------------------------------------------
         
         //Left toolbar
-        sceneBar.getItems().addAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
+        sceneBar.getItems().setAll(homeScene, adminScene, referralScene, appointmentScene, orderScene, invoiceScene);
         sceneBar.setId("menuBar");
         
         //Right toolbar contents
@@ -1379,7 +1467,7 @@ public class Admin extends Stage {
         
         //RIGHT TOOLBAR
         ToolBar stageBar = new ToolBar();
-        stageBar.getItems().addAll(getImageView(), user, separatorBar, logoutMain);
+        stageBar.getItems().setAll(getImageView(), user, separatorBar, logoutMain);
         stageBar.setId("menuBar");
         
         //TOOLBAR HUB       
@@ -1416,7 +1504,7 @@ public class Admin extends Stage {
         searchOne.setMinWidth(184);
         
         HBox setOneHeadB = new HBox();
-        setOneHeadB.getChildren().addAll(searchLabelOne, searchOne);
+        setOneHeadB.getChildren().setAll(searchLabelOne, searchOne);
         HBox.setMargin(searchOne, new Insets(0, 65, 0, 0));
         setOneHeadB.setAlignment(Pos.CENTER_RIGHT);
         
@@ -1453,7 +1541,7 @@ public class Admin extends Stage {
         searchTwo.setMinWidth(184);
         
         HBox setTwoHeadB = new HBox();
-        setTwoHeadB.getChildren().addAll(searchLabelTwo, searchTwo);
+        setTwoHeadB.getChildren().setAll(searchLabelTwo, searchTwo);
         HBox.setMargin(searchTwo, new Insets(0, 65, 0, 0));
         setTwoHeadB.setAlignment(Pos.BOTTOM_RIGHT);
         
@@ -1472,6 +1560,7 @@ public class Admin extends Stage {
         //SCENE LAYOUT
         VBox rootBox = new VBox(toolBarHub, verticalHub);
         ScrollPane scrollPane = new ScrollPane(rootBox);
+        scrollPane.setId("barBody");
         scrollPane.setFitToWidth(true);
         
         Scene invo = new Scene(scrollPane, getSceneWidth(), getSceneHeight());
@@ -1544,6 +1633,7 @@ public class Admin extends Stage {
     private double getSceneWidth() {
         return currSceneWidth;
     }
+    /*** END OF SCENE SIZE CONSERVATION ***/
     
     /*** IMAGE VIEW SETTERS AND GETTERS ***/
     private ImageView imageView = new ImageView();
@@ -1564,6 +1654,33 @@ public class Admin extends Stage {
     private void emptyTableAdmin() {
         
     }
+    
+    private void popAddUser(VBox box) {
+        VBox addPopupOne = new VBox();
+            addPopupOne.setStyle("-fx-background-color: red");
+            
+            
+            Scene scenePopupOne = new Scene(addPopupOne, 300, 300);
+            
+            
+            Stage stagePopupOne = new Stage();
+            //stagePopupOne.initStyle(StageStyle.UNDECORATED);
+            stagePopupOne.initOwner(this);
+            stagePopupOne.initModality(Modality.WINDOW_MODAL);
+            
+            
+            box.disableProperty().bind(stagePopupOne.showingProperty());
+            stagePopupOne.setScene(scenePopupOne);
+            
+            stagePopupOne.showAndWait();
+            
+    }
+    
+    //TABLE TESTS FIXME: DELETE ME
+    private void addTableTestSUO(ActionEvent A, ObservableList<SystemUserObject> B) {
+        B.add(new SystemUserObject());
+    }
+    
     
     
 }

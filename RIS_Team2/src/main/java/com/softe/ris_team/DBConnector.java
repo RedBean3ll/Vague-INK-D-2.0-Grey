@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javax.sql.DataSource;
 
 /**
@@ -63,6 +65,7 @@ public class DBConnector {
         
     }
     
+    //LOGIN QUERY
     protected int queryLoginA(String A, String B) throws SQLException {
         try (Connection connect = DriverManager.getConnection(url, username, password)) {
             
@@ -97,6 +100,7 @@ public class DBConnector {
            
     }
     
+    //LOGIN QUERY
     protected int queryLoginB(int A) {
         try (Connection connect = DriverManager.getConnection(url, username, password)) {
             
@@ -118,5 +122,16 @@ public class DBConnector {
             //e.printStackTrace();
             return -1; //Failed connection or query
         }
+        
+        
+    }
+    
+    //ADMIN QUERY
+    protected ObservableList<SystemUserObject> queryAccounts() {
+        
+        ObservableList<SystemUserObject> data = FXCollections.observableArrayList();
+        
+        
+        return data;
     }
 }
