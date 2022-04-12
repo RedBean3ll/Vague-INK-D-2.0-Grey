@@ -11,7 +11,7 @@ public class SystemInfo {
     }
     
     public static String programVersion() {
-        return "v0.3 - Dev2";
+        return "v0.55 - Dev2";
     }
 
 }

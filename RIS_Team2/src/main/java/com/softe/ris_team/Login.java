@@ -4,6 +4,7 @@
  */
 package com.softe.ris_team;
 
+import com.softe.DBConnector;
 import java.sql.SQLException;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -19,6 +20,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import com.softe.DBConnector;
 
 /**
  *

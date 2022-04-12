@@ -1,0 +1,41 @@
+/*** POPUP ***/
+#popup {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #AAAAAA;
+    -fx-border-width: 0.5px 0.5px 0.5px 0.5px;
+}
+
+#popupLabel {
+    -fx-background-color: #1DA129;
+    -fx-font-size: 18px;
+    -fx-text-fill: #ffffff;
+    -fx-alignment: CENTER;
+    -fx-border-color: #AAAAAA;
+    -fx-border-width: 0.5px 0.5px 0px 0.5px;
+}
+
+#popupField {
+    -fx-background-radius: 0cm;
+}
+
+#popupFieldB {
+    -fx-background-radius: 0cm;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #C8C8C8;
+}
+
+#popupFieldButton {
+    -fx-background-radius: 0cm;
+    -fx-background-color: #1DA129;
+    -fx-font-size: 15px;
+    -fx-text-fill: #ffffff;
+}
+
+#popupFieldButton:hover {
+    -fx-background-radius: 0cm;
+    -fx-background-color: #ffffff;
+    -fx-font-size: 15px;
+    -fx-text-fill: #1DA129;
+    -fx-border-color: transparent transparent #1DA129 transparent;
+}
+
